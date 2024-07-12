@@ -1,0 +1,110 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+body{
+    background-color: #202020;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.walkingsheet-wrapper{
+    max-width: 100%;
+    max-height: 500px;
+    position: relative;
+    margin: 0 auto;
+}
+
+.content-wrapper{
+    max-width: 100%;
+    overflow-x: auto;
+    background: url('../images/hahaha.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: end;
+    height: 500px;
+    display: flex;
+    gap: 16px;
+}
+
+
+.content-wrapper .inner-body{
+    width: 500px;
+    height: 100%;
+    flex-shrink: 0;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 48px;
+    font-weight: 700;
+    color: yellow;
+
+}
+
+.content-wrapper::-webkit-scrollbar{
+    display: none;
+}
+
+
+
+/* Walking Man CSS Start */
+
+
+:root {
+    --width:30400px;
+    --height:600px;
+}
+
+
+.walking-man-wrapper{
+    position: absolute;
+    bottom: 0;
+    transform: translate(-65%,0);
+}
+
+
+.walking-man{
+    width: 165px; 
+    height: 195px;
+    overflow: hidden;
+}
+
+.walking-man .image-wrapper{
+    width: var(--width);
+    height: var(--height);
+    background-image: url('../images/walking-man.png');
+    background-repeat: no-repeat;
+    transform: scale(0.3);
+    transform-origin: top left;
+    
+}
+
+.walking-man .image-wrapper.walking {
+    background-image: url('../images/walking-man.png');
+    animation: walk 0.8s steps(38) infinite;
+}
+
+.walking-reverse {
+    background-image: url('../images/walking-man-reverse.png') !important;
+    animation: walk 0.8s steps(38) infinite reverse;
+}
+
+.reverse-man{
+    background-image: url('../images/walking-man-reverse.png') !important;
+}
+
+
+@keyframes walk {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: calc(var(--width) * -1) 0;
+    }
+}
+
+/* Walking Man CSS END */
