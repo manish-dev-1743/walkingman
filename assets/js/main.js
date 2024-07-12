@@ -5,6 +5,9 @@ let bg_p = 0;
 let isTouching = false;
 let scrollTimeout;
 let startX, startY, scrollLeft, scrollTop;
+let touchHoldDirection = null;
+let touchHoldInterval;
+
 
 let imageWrapper = document.querySelector('.walking-man .image-wrapper');
 let contentWrapper = document.getElementById('content-wrapper');
@@ -57,60 +60,60 @@ contentWrapper.addEventListener('wheel', (e) => {
     
 });
 
-// Handle pointer events for touchpad
-contentWrapper.addEventListener('pointerdown', (e) => {
-    if (e.pointerType === 'touch') {
-        startX = e.clientX;
-        isTouching = true;
-    }
-});
 
-contentWrapper.addEventListener('pointermove', (e) => {
-    if (!isTouching) return;
-    e.preventDefault();
-    const diffX = e.clientX - startX;
-    if (diffX > 0) {
-        moveRight();
-    } else if (diffX < 0) {
-        moveLeft();
-    }
 
-    startX = e.clientX;
-});
+function startScrolling(direction) {
+    isTouching = true;
+    touchHoldDirection = direction;
+    touchHoldInterval = setInterval(() => {
+        if (touchHoldDirection === 'right') {
+            moveRight();
+        } else if (touchHoldDirection === 'left') {
+            moveLeft();
+        }
+    }, 16); // 60 frames per second
+}
 
-contentWrapper.addEventListener('pointerup', () => {
+// Function to stop scrolling
+function stopScrolling() {
     isTouching = false;
-    imageWrapper.classList.remove('walking-reverse');
-    imageWrapper.classList.remove('walking');
-});
+    clearInterval(touchHoldInterval);
+    touchHoldDirection = null;
+    detectScrollEnd();
+}
 
-contentWrapper.addEventListener('pointercancel', () => {
-    isTouching = false;
-    imageWrapper.classList.remove('walking-reverse');
-    imageWrapper.classList.remove('walking');
-});
+// Function to detect when scrolling has stopped
+function detectScrollEnd() {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+        console.log('Scrolling has stopped');
+    }, 150); 
+}
 
+
+// Add touchstart event listener
 contentWrapper.addEventListener('touchstart', (e) => {
     const touch = e.touches[0];
-    startX = touch.pageX;
-    startY = touch.pageY;
-    scrollLeft = contentWrapper.scrollLeft;
-    scrollTop = contentWrapper.scrollTop;
+    const touchX = touch.pageX;
+    const screenWidth = window.innerWidth;
+
+    if (touchX < screenWidth / 2) {
+        // Touch on the left side
+        startScrolling('left');
+    } else {
+        // Touch on the right side
+        startScrolling('right');
+    }
 });
 
-contentWrapper.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-    const touch = e.touches[0];
-    const deltaX = (startX - touch.pageX) * scrollSpeed;
-    const deltaY = (startY - touch.pageY) * scrollSpeed;
+// Add touchend event listener
+contentWrapper.addEventListener('touchend', (e) => {
+    stopScrolling();
+});
 
-    if (deltaX > 0 || deltaY > 0) {
-        moveRight(Math.max(deltaX, deltaY));
-    } else if (deltaX < 0 || deltaY < 0) {
-        moveLeft(Math.max(-deltaX, -deltaY));
-    }
-
-    detectScrollEnd();
+// Add touchcancel event listener to handle interruptions
+contentWrapper.addEventListener('touchcancel', (e) => {
+    stopScrolling();
 });
 
 
