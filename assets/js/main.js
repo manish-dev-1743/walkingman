@@ -92,7 +92,7 @@ function detectScrollEnd() {
 
 
 // Add touchstart event listener
-contentWrapper.addEventListener('touchstart', (e) => {
+document.addEventListener('touchstart', (e) => {
     const touch = e.touches[0];
     const touchX = touch.pageX;
     const screenWidth = window.innerWidth;
@@ -107,12 +107,12 @@ contentWrapper.addEventListener('touchstart', (e) => {
 });
 
 // Add touchend event listener
-contentWrapper.addEventListener('touchend', (e) => {
+document.addEventListener('touchend', (e) => {
     stopScrolling();
 });
 
 // Add touchcancel event listener to handle interruptions
-contentWrapper.addEventListener('touchcancel', (e) => {
+document.addEventListener('touchcancel', (e) => {
     stopScrolling();
 });
 
