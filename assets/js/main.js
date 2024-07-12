@@ -2,8 +2,9 @@ let max_m_pos = 50;
 let min_m_pos = curr_m_pos = 5;
 let end_max_m_pos = 95;
 let bg_p = 0;
-let startX, isTouching = false;
+let isTouching = false;
 let scrollTimeout;
+let startX, startY, scrollLeft, scrollTop;
 
 let imageWrapper = document.querySelector('.walking-man .image-wrapper');
 let contentWrapper = document.getElementById('content-wrapper');
@@ -35,65 +36,82 @@ document.addEventListener('keyup', function(event) {
 });
 
 
+       
+contentWrapper.addEventListener('wheel', (e) => {
+    
+    if (e.deltaX > 0) {
+        e.preventDefault();
+        moveRight();
+    } else if (e.deltaX < 0) {
+        e.preventDefault();
+        moveLeft();
+    }else if(e.deltaY > 0){
+        e.preventDefault();
+        moveRight();
+    }else if(e.deltaY < 0){
+        e.preventDefault();
+        moveLeft();
+    }
 
-        // Handle wheel event for mousepad/trackpad
-        contentWrapper.addEventListener('wheel', (e) => {
-            
-            if (e.deltaX > 0) {
-                e.preventDefault();
-                moveRight();
-            } else if (e.deltaX < 0) {
-                e.preventDefault();
-                moveLeft();
-            }else if(e.deltaY > 0){
-                e.preventDefault();
-                moveRight();
-            }else if(e.deltaY < 0){
-                e.preventDefault();
-                moveLeft();
-            }
+    detectScrollEnd();
+    
+});
 
-            clearTimeout(scrollTimeout);
+// Handle pointer events for touchpad
+contentWrapper.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'touch') {
+        startX = e.clientX;
+        isTouching = true;
+    }
+});
 
-            scrollTimeout = setTimeout(() => {
-                imageWrapper.classList.remove('walking-reverse');
-                imageWrapper.classList.remove('walking');
-            }, 150);
-            
-        });
+contentWrapper.addEventListener('pointermove', (e) => {
+    if (!isTouching) return;
+    e.preventDefault();
+    const diffX = e.clientX - startX;
+    if (diffX > 0) {
+        moveRight();
+    } else if (diffX < 0) {
+        moveLeft();
+    }
 
-        // Handle pointer events for touchpad
-        contentWrapper.addEventListener('pointerdown', (e) => {
-            if (e.pointerType === 'touch') {
-                startX = e.clientX;
-                isTouching = true;
-            }
-        });
+    startX = e.clientX;
+});
 
-        contentWrapper.addEventListener('pointermove', (e) => {
-            if (!isTouching) return;
-            e.preventDefault();
-            const diffX = e.clientX - startX;
-            if (diffX > 0) {
-               moveRight();
-            } else if (diffX < 0) {
-               moveLeft();
-            }
+contentWrapper.addEventListener('pointerup', () => {
+    isTouching = false;
+    imageWrapper.classList.remove('walking-reverse');
+    imageWrapper.classList.remove('walking');
+});
 
-            startX = e.clientX;
-        });
+contentWrapper.addEventListener('pointercancel', () => {
+    isTouching = false;
+    imageWrapper.classList.remove('walking-reverse');
+    imageWrapper.classList.remove('walking');
+});
 
-        contentWrapper.addEventListener('pointerup', () => {
-            isTouching = false;
-            imageWrapper.classList.remove('walking-reverse');
-            imageWrapper.classList.remove('walking');
-        });
+contentWrapper.addEventListener('touchstart', (e) => {
+    const touch = e.touches[0];
+    startX = touch.pageX;
+    startY = touch.pageY;
+    scrollLeft = contentWrapper.scrollLeft;
+    scrollTop = contentWrapper.scrollTop;
+});
 
-        contentWrapper.addEventListener('pointercancel', () => {
-            isTouching = false;
-            imageWrapper.classList.remove('walking-reverse');
-            imageWrapper.classList.remove('walking');
-        });
+contentWrapper.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const deltaX = (startX - touch.pageX) * scrollSpeed;
+    const deltaY = (startY - touch.pageY) * scrollSpeed;
+
+    if (deltaX > 0 || deltaY > 0) {
+        moveRight(Math.max(deltaX, deltaY));
+    } else if (deltaX < 0 || deltaY < 0) {
+        moveLeft(Math.max(-deltaX, -deltaY));
+    }
+
+    detectScrollEnd();
+});
 
 
 
@@ -148,4 +166,12 @@ function moveLeft(){
     imageWrapper.classList.remove('walking');
     imageWrapper.classList.add('reverse-man');
     imageWrapper.classList.add('walking-reverse');
+}
+
+function detectScrollEnd(){
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+        imageWrapper.classList.remove('walking-reverse');
+        imageWrapper.classList.remove('walking');
+    }, 150);
 }
