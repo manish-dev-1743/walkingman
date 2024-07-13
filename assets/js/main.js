@@ -12,6 +12,7 @@ let touchHoldInterval;
 let imageWrapper = document.querySelector('.walking-man .image-wrapper');
 let contentWrapper = document.getElementById('content-wrapper');
 let manWrapper = document.getElementById('man_wrap');
+let ch_char = document.getElementsByClassName('c-char');
 
 manWrapper.setAttribute('style','left:'+curr_m_pos+'%');
 
@@ -177,4 +178,13 @@ function detectScrollEnd(){
         imageWrapper.classList.remove('walking-reverse');
         imageWrapper.classList.remove('walking');
     }, 150);
+}
+
+
+for(let i = 0;i<ch_char.length;i++){
+    ch_char[i].addEventListener('click',function(){
+        document.getElementsByClassName('character')[0].classList.add('d-none');
+        let gender = ch_char[i].getAttribute('for');
+        document.querySelector('.walking-man').classList.add(gender)
+    });
 }

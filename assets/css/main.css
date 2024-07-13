@@ -57,6 +57,9 @@ body{
 :root {
     --width:30400px;
     --height:600px;
+
+    --womanWidth:9600px;
+    --womanHeight:360px;
 }
 
 
@@ -68,33 +71,65 @@ body{
 
 
 .walking-man{
-    width: 165px; 
-    height: 195px;
     overflow: hidden;
+
 }
 
-.walking-man .image-wrapper{
+.walking-man.man{
+    width: 165px; 
+    height: 195px;
+}
+
+.walking-man.woman{
+    width: 165px; 
+    height: 195px;
+}
+
+.walking-man.man .image-wrapper{
     width: var(--width);
     height: var(--height);
     background-image: url('../images/walking-man.png');
-    background-repeat: no-repeat;
     transform: scale(0.3);
-    transform-origin: top left;
-    
 }
 
-.walking-man .image-wrapper.walking {
+.walking-man.woman .image-wrapper{
+    width: var(--womanWidth);
+    height: var(--womanHeight);
+    background-image: url('../images/walking-woman.png');
+    transform: scale(0.5);
+}
+
+.walking-man .image-wrapper{
+    background-repeat: no-repeat;  
+    transform-origin: top left;  
+}
+
+.walking-man.man .image-wrapper.walking {
     background-image: url('../images/walking-man.png');
     animation: walk 0.8s steps(38) infinite;
 }
 
-.walking-reverse {
+.walking-man.woman .image-wrapper.walking {
+    background-image: url('../images/walking-woman.png');
+    animation: walkWoman 0.8s steps(20) infinite;
+}
+
+.walking-man.man .walking-reverse {
     background-image: url('../images/walking-man-reverse.png') !important;
     animation: walk 0.8s steps(38) infinite reverse;
 }
 
-.reverse-man{
+.walking-man.woman .walking-reverse {
+    background-image: url('../images/walking-woman-reverse.png') !important;
+    animation: walkWoman 0.8s steps(20) infinite reverse;
+}
+
+.walking-man.man .reverse-man{
     background-image: url('../images/walking-man-reverse.png') !important;
+}
+
+.walking-man.woman .reverse-man{
+    background-image: url('../images/walking-woman-reverse.png') !important;
 }
 
 
@@ -107,4 +142,87 @@ body{
     }
 }
 
+@keyframes walkWoman {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: calc(var(--womanWidth) * -1) 0;
+    }
+}
+
 /* Walking Man CSS END */
+
+
+
+.character{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    background-color: #8a8a8a;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    transition: all 0.3s ease-in-out;
+}
+
+.character.d-none{
+    display: none;
+}
+
+.character h2{
+    font-size: 3rem;
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 2rem;
+}
+
+.character .row{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4rem;
+    width: 100%;
+}
+
+.character .row .col{
+    width: 200px;
+    border: 1px solid black;
+    border-radius: 20px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+    overflow: hidden;
+    background-color: #464946;
+    padding: 1rem;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.character .row .col:hover{
+    transform: scale(0.95);
+}
+
+.character .row .col figure{
+    width: 100%;
+    height: 200px;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid white;
+    padding-bottom: 0.5rem;
+}
+
+.character .row .col figure img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: -45px;
+}
+
+.character .row .col p{
+    text-align: center;
+    color: white;
+    font-size: 32px;
+}
